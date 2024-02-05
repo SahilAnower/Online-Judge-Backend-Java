@@ -1,9 +1,9 @@
 package com.sahil.online.judge.service.impl;
 
+import com.sahil.online.judge.dto.request.JudgeSubmissionGetRequestDTO;
 import com.sahil.online.judge.dto.request.JudgeSubmissionPostRequestDTO;
 import com.sahil.online.judge.service.ThirdPartyService;
 import kong.unirest.HttpResponse;
-import kong.unirest.JsonNode;
 import kong.unirest.Unirest;
 import kong.unirest.json.JSONObject;
 import lombok.extern.slf4j.Slf4j;
@@ -36,7 +36,7 @@ public class ThirdPartyServiceImpl implements ThirdPartyService {
     }
 
     @Override
-    public String createSubmission(JudgeSubmissionPostRequestDTO judgeSubmissionPostRequestDTO) {
+    public JSONObject createSubmission(JudgeSubmissionPostRequestDTO judgeSubmissionPostRequestDTO) {
         try {
             JSONObject jsonObject = getJsonObject(judgeSubmissionPostRequestDTO);
             StringBuilder queryParams = new StringBuilder();
@@ -48,6 +48,26 @@ public class ThirdPartyServiceImpl implements ThirdPartyService {
                     .header("Content-Type", "application/json")
                     .header("content-type", "application/json")
                     .body(jsonObject)
+                    .asString();
+            if (response.isSuccess()) {
+                return new JSONObject(response.getBody());
+            }
+        }catch (Exception exception) {
+            throw new RuntimeException(exception.getMessage());
+        }
+        return null;
+    }
+
+    @Override
+    public String getSubmission(JudgeSubmissionGetRequestDTO judgeSubmissionGetRequestDTO) {
+        try {
+            StringBuilder queryParams = new StringBuilder();
+            queryParams.append("?base64_encoded=").append(judgeSubmissionGetRequestDTO.getBase64Encoded());
+            HttpResponse<String> response = Unirest.get(judgeBaseUrl + "/submissions/" + judgeSubmissionGetRequestDTO.getToken() + queryParams)
+                    .header("X-RapidAPI-Host", apiHost)
+                    .header("X-RapidAPI-Key", apiKey)
+                    .header("Content-Type", "application/json")
+                    .header("content-type", "application/json")
                     .asString();
             if (response.isSuccess()) {
                 return response.getBody();
@@ -80,10 +100,5 @@ public class ThirdPartyServiceImpl implements ThirdPartyService {
             jsonObject.put("compiler_options", judgeSubmissionPostRequestDTO.getCompilerOptions());
         }
         return jsonObject;
-    }
-
-    @Override
-    public void getSubmission() {
-
     }
 }

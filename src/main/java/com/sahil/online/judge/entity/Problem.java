@@ -1,13 +1,7 @@
 package com.sahil.online.judge.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
 
 import java.math.BigDecimal;
 
@@ -17,11 +11,12 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @Table(name = "problem")
 @Entity
+@Builder
 public class Problem extends BaseEntity{
     private String name;
     private String statement;
     @Transient
-    private LikeCount likeDetails;
+    private LikeCount likeDetails; // todo: to write query for this
     @Transient
     private Long acceptedCount;
     @Transient
@@ -34,4 +29,6 @@ public class Problem extends BaseEntity{
     private BigDecimal memoryLimit;
     @Column(name = "start_code")
     private String startCode;
+    @Enumerated(EnumType.STRING)
+    private Difficulty difficulty;
 }
