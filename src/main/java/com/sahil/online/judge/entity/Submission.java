@@ -1,12 +1,7 @@
 package com.sahil.online.judge.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
 
 import java.math.BigDecimal;
 
@@ -16,15 +11,21 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @Entity
 @Table(name = "submission")
+@Builder
 public class Submission extends BaseEntity{
     @Column(name = "problem_id")
     private Long problemId;
     @Column(name = "user_id")
     private Long userId;
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private Status status;
     private BigDecimal time;
     private BigDecimal memory;
     private String code;
     @Column(name = "judge_token")
     private String judgeToken;
+    @Column(name = "input_test_case")
+    private String inputTestCase;
+    @Column(name = "expected_output")
+    private String expectedOutput;
 }
